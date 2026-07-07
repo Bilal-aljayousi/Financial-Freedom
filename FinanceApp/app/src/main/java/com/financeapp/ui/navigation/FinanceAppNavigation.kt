@@ -31,6 +31,7 @@ import com.financeapp.ui.screens.goals.GoalDashboardScreen
 import com.financeapp.ui.screens.goals.GoalDashboardViewModel
 import com.financeapp.ui.screens.goals.GoalPlannerScreen
 import com.financeapp.ui.screens.goals.GoalPlannerViewModel
+import com.financeapp.ui.screens.more.MoreScreen
 import com.financeapp.ui.screens.portfolio.PortfolioScreen
 import com.financeapp.ui.screens.portfolio.PortfolioViewModel
 import com.financeapp.ui.screens.reports.ReportsScreen
@@ -65,22 +66,38 @@ fun FinanceAppNavigation(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Dashboard.route) {
-                DashboardScreen(viewModel = dashboardViewModel)
+                DashboardScreen(
+                    viewModel = dashboardViewModel,
+                    onNavigateToExpenses = { navController.navigate(Screen.Expenses.route) },
+                    onNavigateToGoals = { navController.navigate(Screen.Goals.route) },
+                    onNavigateToGoalPlanner = { navController.navigate(Screen.GoalPlanner.route) },
+                    onNavigateToReports = { navController.navigate(Screen.Reports.route) },
+                    onNavigateToAlerts = { navController.navigate(Screen.Alerts.route) }
+                )
             }
             composable(Screen.Expenses.route) {
                 ExpenseScreen(viewModel = expenseViewModel)
             }
-            composable(Screen.Alerts.route) {
-                AlertsScreen(viewModel = alertsViewModel)
+            composable(Screen.Goals.route) {
+                GoalDashboardScreen(viewModel = goalDashboardViewModel)
             }
             composable(Screen.Reports.route) {
                 ReportsScreen(viewModel = reportsViewModel)
             }
+            composable(Screen.More.route) {
+                MoreScreen(
+                    onNavigateToAlerts = { navController.navigate(Screen.Alerts.route) },
+                    onNavigateToSalary = { navController.navigate(Screen.Salary.route) },
+                    onNavigateToPortfolio = { navController.navigate(Screen.Portfolio.route) },
+                    onNavigateToCalculator = { navController.navigate(Screen.Calculator.route) },
+                    onNavigateToBackup = { navController.navigate(Screen.Backup.route) }
+                )
+            }
+            composable(Screen.Alerts.route) {
+                AlertsScreen(viewModel = alertsViewModel)
+            }
             composable(Screen.Salary.route) {
                 SalaryPlannerScreen(viewModel = salaryPlannerViewModel)
-            }
-            composable(Screen.Goals.route) {
-                GoalDashboardScreen(viewModel = goalDashboardViewModel)
             }
             composable(Screen.GoalPlanner.route) {
                 GoalPlannerScreen(viewModel = goalPlannerViewModel)
@@ -107,7 +124,7 @@ private fun BottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar {
-        Screen.allScreens.forEach { screen ->
+        Screen.bottomNavScreens.forEach { screen ->
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = screen.title) },
                 label = {

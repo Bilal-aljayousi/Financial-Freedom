@@ -1,6 +1,7 @@
 package com.financeapp.ui.screens.dashboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -40,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.financeapp.ui.components.PieChart
@@ -47,14 +54,21 @@ import com.financeapp.util.CurrencyUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(viewModel: DashboardViewModel) {
+fun DashboardScreen(
+    viewModel: DashboardViewModel,
+    onNavigateToExpenses: () -> Unit = {},
+    onNavigateToGoals: () -> Unit = {},
+    onNavigateToGoalPlanner: () -> Unit = {},
+    onNavigateToReports: () -> Unit = {},
+    onNavigateToAlerts: () -> Unit = {}
+) {
     val summary by viewModel.summary.collectAsState()
     val categoryTotals by viewModel.categoryTotals.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Finance Dashboard") },
+                title = { Text("Financial Freedom") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White
@@ -69,6 +83,67 @@ fun DashboardScreen(viewModel: DashboardViewModel) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // Quick Access Buttons
+            item {
+                Text(
+                    "Quick Access",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    QuickAccessButton(
+                        icon = Icons.Default.PieChart,
+                        label = "Expenses",
+                        color = Color(0xFFF44336),
+                        modifier = Modifier.weight(1f),
+                        onClick = onNavigateToExpenses
+                    )
+                    QuickAccessButton(
+                        icon = Icons.Default.Flag,
+                        label = "Goals",
+                        color = Color(0xFF4CAF50),
+                        modifier = Modifier.weight(1f),
+                        onClick = onNavigateToGoals
+                    )
+                    QuickAccessButton(
+                        icon = Icons.Default.TrackChanges,
+                        label = "Planner",
+                        color = Color(0xFF2196F3),
+                        modifier = Modifier.weight(1f),
+                        onClick = onNavigateToGoalPlanner
+                    )
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    QuickAccessButton(
+                        icon = Icons.Default.BarChart,
+                        label = "Reports",
+                        color = Color(0xFF9C27B0),
+                        modifier = Modifier.weight(1f),
+                        onClick = onNavigateToReports
+                    )
+                    QuickAccessButton(
+                        icon = Icons.Default.Notifications,
+                        label = "Alerts",
+                        color = Color(0xFFFF9800),
+                        modifier = Modifier.weight(1f),
+                        onClick = onNavigateToAlerts
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+
             // Income vs Expenses
             item {
                 IncomeExpenseCard(
@@ -471,6 +546,44 @@ private fun TopExpenseCard(category: String, amount: Double) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.error
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuickAccessButton(
+    icon: ImageVector,
+    label: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier.clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = color.copy(alpha = 0.1f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(28.dp)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                label,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
+                color = color
             )
         }
     }
