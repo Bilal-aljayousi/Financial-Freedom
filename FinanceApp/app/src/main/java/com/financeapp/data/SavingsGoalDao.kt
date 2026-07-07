@@ -15,6 +15,9 @@ interface SavingsGoalDao {
     @Query("SELECT * FROM savings_goals WHERE id = :id")
     fun getGoalById(id: Long): Flow<SavingsGoal?>
 
+    @Query("SELECT * FROM savings_goals WHERE id = :id")
+    suspend fun getGoalByIdSync(id: Long): SavingsGoal?
+
     @Insert
     suspend fun insert(goal: SavingsGoal): Long
 

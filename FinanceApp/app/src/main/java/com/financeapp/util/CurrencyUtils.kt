@@ -1,23 +1,21 @@
 package com.financeapp.util
 
-import java.text.NumberFormat
-import java.util.Locale
-
 object CurrencyUtils {
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US)
-
-    fun format(amount: Double): String = currencyFormat.format(amount)
-
-    fun formatCompact(amount: Double): String {
-        return when {
-            amount >= 1_000_000 -> "$${String.format("%.1f", amount / 1_000_000)}M"
-            amount >= 1_000 -> "$${String.format("%.1f", amount / 1_000)}K"
-            else -> format(amount)
+    fun format(amount: Double, currency: String = "JOD"): String {
+        return when (currency) {
+            "JOD" -> "${String.format("%.3f", amount)} JOD"
+            "USD" -> "$${String.format("%.2f", amount)}"
+            "EUR" -> "\u20AC${String.format("%.2f", amount)}"
+            "SAR" -> "${String.format("%.2f", amount)} SAR"
+            else -> "${String.format("%.2f", amount)} $currency"
         }
     }
 
-    fun formatPercentage(value: Double): String {
-        val sign = if (value >= 0) "+" else ""
-        return "$sign${String.format("%.2f", value)}%"
+    fun formatCompact(amount: Double, currency: String = "JOD"): String {
+        return when {
+            amount >= 1_000_000 -> "${format(amount / 1_000_000, currency)}M"
+            amount >= 1_000 -> "${format(amount / 1_000, currency)}K"
+            else -> format(amount, currency)
+        }
     }
 }

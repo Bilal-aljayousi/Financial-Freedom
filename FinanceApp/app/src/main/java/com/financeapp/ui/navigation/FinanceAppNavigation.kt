@@ -17,43 +17,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.financeapp.backup.BackupManagerScreen
-import com.financeapp.backup.BackupManagerViewModel
-import com.financeapp.ui.screens.alerts.AlertsScreen
-import com.financeapp.ui.screens.alerts.AlertsViewModel
-import com.financeapp.ui.screens.calculator.CalculatorScreen
-import com.financeapp.ui.screens.calculator.CalculatorViewModel
-import com.financeapp.ui.screens.dashboard.DashboardScreen
-import com.financeapp.ui.screens.dashboard.DashboardViewModel
-import com.financeapp.ui.screens.expense.ExpenseScreen
-import com.financeapp.ui.screens.expense.ExpenseViewModel
-import com.financeapp.ui.screens.goals.GoalDashboardScreen
-import com.financeapp.ui.screens.goals.GoalDashboardViewModel
-import com.financeapp.ui.screens.goals.GoalPlannerScreen
-import com.financeapp.ui.screens.goals.GoalPlannerViewModel
-import com.financeapp.ui.screens.more.MoreScreen
-import com.financeapp.ui.screens.portfolio.PortfolioScreen
-import com.financeapp.ui.screens.portfolio.PortfolioViewModel
-import com.financeapp.ui.screens.reports.ReportsScreen
-import com.financeapp.ui.screens.reports.ReportsViewModel
-import com.financeapp.ui.screens.salary.SalaryPlannerScreen
-import com.financeapp.ui.screens.salary.SalaryPlannerViewModel
-import com.financeapp.ui.screens.savings.SavingsScreen
-import com.financeapp.ui.screens.savings.SavingsViewModel
+import com.financeapp.ui.screens.goals.GoalsScreen
+import com.financeapp.ui.screens.goals.GoalsViewModel
+import com.financeapp.ui.screens.home.HomeScreen
+import com.financeapp.ui.screens.home.HomeViewModel
+import com.financeapp.ui.screens.settings.SettingsScreen
+import com.financeapp.ui.screens.settings.SettingsViewModel
 
 @Composable
 fun FinanceAppNavigation(
-    dashboardViewModel: DashboardViewModel,
-    expenseViewModel: ExpenseViewModel,
-    alertsViewModel: AlertsViewModel,
-    reportsViewModel: ReportsViewModel,
-    salaryPlannerViewModel: SalaryPlannerViewModel,
-    savingsViewModel: SavingsViewModel,
-    goalDashboardViewModel: GoalDashboardViewModel,
-    goalPlannerViewModel: GoalPlannerViewModel,
-    portfolioViewModel: PortfolioViewModel,
-    calculatorViewModel: CalculatorViewModel,
-    backupManagerViewModel: BackupManagerViewModel
+    homeViewModel: HomeViewModel,
+    goalsViewModel: GoalsViewModel,
+    settingsViewModel: SettingsViewModel
 ) {
     val navController = rememberNavController()
 
@@ -62,57 +37,17 @@ fun FinanceAppNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Dashboard.route,
+            startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Dashboard.route) {
-                DashboardScreen(
-                    viewModel = dashboardViewModel,
-                    onNavigateToExpenses = { navController.navigate(Screen.Expenses.route) },
-                    onNavigateToGoals = { navController.navigate(Screen.Goals.route) },
-                    onNavigateToGoalPlanner = { navController.navigate(Screen.GoalPlanner.route) },
-                    onNavigateToReports = { navController.navigate(Screen.Reports.route) },
-                    onNavigateToAlerts = { navController.navigate(Screen.Alerts.route) }
-                )
-            }
-            composable(Screen.Expenses.route) {
-                ExpenseScreen(viewModel = expenseViewModel)
+            composable(Screen.Home.route) {
+                HomeScreen(viewModel = homeViewModel)
             }
             composable(Screen.Goals.route) {
-                GoalDashboardScreen(viewModel = goalDashboardViewModel)
+                GoalsScreen(viewModel = goalsViewModel)
             }
-            composable(Screen.Reports.route) {
-                ReportsScreen(viewModel = reportsViewModel)
-            }
-            composable(Screen.More.route) {
-                MoreScreen(
-                    onNavigateToAlerts = { navController.navigate(Screen.Alerts.route) },
-                    onNavigateToSalary = { navController.navigate(Screen.Salary.route) },
-                    onNavigateToPortfolio = { navController.navigate(Screen.Portfolio.route) },
-                    onNavigateToCalculator = { navController.navigate(Screen.Calculator.route) },
-                    onNavigateToBackup = { navController.navigate(Screen.Backup.route) }
-                )
-            }
-            composable(Screen.Alerts.route) {
-                AlertsScreen(viewModel = alertsViewModel)
-            }
-            composable(Screen.Salary.route) {
-                SalaryPlannerScreen(viewModel = salaryPlannerViewModel)
-            }
-            composable(Screen.GoalPlanner.route) {
-                GoalPlannerScreen(viewModel = goalPlannerViewModel)
-            }
-            composable(Screen.Savings.route) {
-                SavingsScreen(viewModel = savingsViewModel)
-            }
-            composable(Screen.Portfolio.route) {
-                PortfolioScreen(viewModel = portfolioViewModel)
-            }
-            composable(Screen.Calculator.route) {
-                CalculatorScreen(viewModel = calculatorViewModel)
-            }
-            composable(Screen.Backup.route) {
-                BackupManagerScreen(viewModel = backupManagerViewModel)
+            composable(Screen.Settings.route) {
+                SettingsScreen(viewModel = settingsViewModel)
             }
         }
     }

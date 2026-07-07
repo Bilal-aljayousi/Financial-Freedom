@@ -10,6 +10,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.financeapp.FinanceApp
 import com.financeapp.MainActivity
+import com.financeapp.data.FinanceDatabase
+import com.financeapp.data.FinanceRepository
 import java.util.Calendar
 
 class DailyReminderWorker(
@@ -20,20 +22,33 @@ class DailyReminderWorker(
     override suspend fun doWork(): Result {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
 
-        // Only send reminder between 6pm-10pm (evening reminder)
-        if (hour in 18..22) {
+        // Only send reminder between 8am-9pm
+        if (hour in 8..21) {
             showReminderNotification()
         }
 
         return Result.success()
     }
 
-    private fun showReminderNotification() {
+    private suspend fun showReminderNotification() {
+        val db = FinanceDatabase.getDatabase(applicationContext)
+        val repository = FinanceRepository(db)
+
+        val goals = repository.getAllGoals().let { flow ->
+            // Get first non-completed goal
+            val allGoals = mutableListOf<com.financeapp.data.SavingsGoal>()
+            flow.collect { allGoals.addAll(it) }
+            allGoals
+        }
+
+        val activeGoal = goals.firstOrNull { !it.isCompleted } ?: return
+        val dailyNeeded = activeGoal.dailyNeeded
+        val currency = repository.getSalaryConfigSync()?.currency ?: "JOD"
+
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val intent = Intent(applicationContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("navigate_to", "expenses")
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -43,21 +58,20 @@ class DailyReminderWorker(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val tips = listOf(
-            "Don't forget to log your expenses today!",
-            "Track every purchase to stay on budget",
-            "Small expenses add up - log them now",
-            "Your budget thanks you for tracking!",
-            "Log expenses while you remember them"
+        val messages = listOf(
+            "Save ${formatAmount(dailyNeeded, currency)} today for '${activeGoal.name}'",
+            "Don't forget! ${formatAmount(dailyNeeded, currency)} today keeps you on track for '${activeGoal.name}'",
+            "Your goal '${activeGoal.name}' needs ${formatAmount(dailyNeeded, currency)} today",
+            "Stay consistent! Save ${formatAmount(dailyNeeded, currency)} for '${activeGoal.name}'"
         )
-        val tip = tips.random()
+        val message = messages.random()
 
-        val notification = NotificationCompat.Builder(applicationContext, FinanceApp.REMINDER_CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_menu_recent_history)
-            .setContentTitle("Daily Expense Reminder")
-            .setContentText(tip)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(tip))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val notification = NotificationCompat.Builder(applicationContext, FinanceApp.DAILY_REMINDER_CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle("Daily Savings Reminder")
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
@@ -69,8 +83,18 @@ class DailyReminderWorker(
         }
     }
 
+    private fun formatAmount(amount: Double, currency: String): String {
+        return when (currency) {
+            "JOD" -> "${String.format("%.3f", amount)} JOD"
+            "USD" -> "$${String.format("%.2f", amount)}"
+            "EUR" -> "\u20AC${String.format("%.2f", amount)}"
+            "SAR" -> "${String.format("%.2f", amount)} SAR"
+            else -> "${String.format("%.2f", amount)} $currency"
+        }
+    }
+
     companion object {
-        const val WORK_NAME = "daily_expense_reminder"
+        const val WORK_NAME = "daily_savings_reminder"
         const val DAILY_REMINDER_NOTIFICATION_ID = 300
     }
 }

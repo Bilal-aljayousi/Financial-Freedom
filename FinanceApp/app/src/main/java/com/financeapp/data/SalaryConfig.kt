@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 data class SalaryConfig(
     @PrimaryKey val id: Long = 1,
     val monthlySalary: Double = 0.0,
-    val needsPercent: Double = 50.0,
-    val wantsPercent: Double = 30.0,
-    val savingsPercent: Double = 20.0,
+    val currency: String = "JOD",
     val lastUpdated: Long = System.currentTimeMillis()
 )

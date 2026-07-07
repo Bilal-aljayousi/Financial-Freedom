@@ -71,21 +71,8 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // WorkManager for scheduled notifications
+    // WorkManager for daily reminders
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-
-    // Charts - YCharts (Compose native)
-    implementation("co.yml:ycharts:2.1.0")
-
-    // Date picker
-    implementation("com.google.android.material:material:1.11.0")
-
-    // Gson
-    implementation("com.google.code.gson:gson:2.10.1")
-
-    // Retrofit for stock API
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
