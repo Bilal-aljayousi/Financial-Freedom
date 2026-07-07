@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.financeapp.FinanceApp
 import com.financeapp.MainActivity
 import java.util.Calendar
 
@@ -51,7 +52,7 @@ class DailyReminderWorker(
         )
         val tip = tips.random()
 
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_EXPENSES)
+        val notification = NotificationCompat.Builder(applicationContext, FinanceApp.REMINDER_CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_menu_recent_history)
             .setContentTitle("Daily Expense Reminder")
             .setContentText(tip)

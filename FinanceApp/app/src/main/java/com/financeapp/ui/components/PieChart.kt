@@ -65,14 +65,14 @@ fun PieChart(
             val colorList = ChartColors
 
             data.entries.forEachIndexed { index, (_, value) ->
-                val sweepAngle = (value / total) * 360f * animatedProgress
+                val sweepAngle = ((value / total) * 360f * animatedProgress).toFloat()
                 drawArc(
                     color = colorList[index % colorList.size],
                     startAngle = startAngle,
                     sweepAngle = sweepAngle,
                     useCenter = false,
                     topLeft = Offset(center.x - radius, center.y - radius),
-                    size = Size(radius * 2, radius * 2),
+                    size = Size(radius * 2f, radius * 2f),
                     style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
                 )
                 startAngle += sweepAngle

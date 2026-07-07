@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -69,7 +70,7 @@ class GoalDashboardViewModel(application: Application) : AndroidViewModel(applic
         salaryConfig = repository.getSalaryConfig()
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-        goalsWithProgress = combine(goals) { goalList ->
+        goalsWithProgress = goals.map { goalList ->
             goalList.map { goal -> buildGoalWithProgress(goal) }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 

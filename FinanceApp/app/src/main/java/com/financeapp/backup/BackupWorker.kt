@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.financeapp.data.FinanceDatabase
 import com.financeapp.data.FinanceRepository
 
@@ -43,10 +44,10 @@ class BackupWorker(
                 BackupManager.cleanOldBackups(applicationContext, keepCount = 10)
                 Result.success()
             } else {
-                Result.failure(result.exceptionOrNull() ?: Exception("Backup failed"))
+                Result.failure(workDataOf("error" to (result.exceptionOrNull()?.message ?: "Backup failed")))
             }
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(workDataOf("error" to e.message))
         }
     }
 

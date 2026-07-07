@@ -17,7 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Dismiss
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
@@ -317,7 +317,7 @@ private fun AlertItemCard(alert: AlertItem, onDismiss: () -> Unit) {
                     )
                 }
                 IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
-                    Icon(Icons.Default.Dismiss, contentDescription = "Dismiss", modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Close, contentDescription = "Dismiss", modifier = Modifier.size(16.dp))
                 }
             }
 

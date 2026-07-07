@@ -65,26 +65,17 @@ fun BarChart(
         }
 
         // Labels
-        Canvas(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            val barWidth = size.width / (data.size * 2)
             data.forEachIndexed { index, (label, _) ->
-                val x = index * (size.width / data.size) + barWidth
-                drawContext.canvas.nativeCanvas.apply {
-                    drawText(
-                        label,
-                        x,
-                        size.height,
-                        android.graphics.Paint().apply {
-                            textSize = 24f
-                            textAlign = android.graphics.Paint.Align.CENTER
-                            color = android.graphics.Color.GRAY
-                        }
-                    )
-                }
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Gray
+                )
             }
         }
     }
