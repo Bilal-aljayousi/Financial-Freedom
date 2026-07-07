@@ -25,10 +25,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Grant execute permission for gradlew
-        run: chmod +x FinanceApp/gradlew
+        run: chmod +x gradlew
+        working-directory: FinanceApp
 
       - name: Build Debug APK
-        run: ./FinanceApp/gradlew assembleDebug
+        run: ./gradlew assembleDebug
+        working-directory: FinanceApp
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
