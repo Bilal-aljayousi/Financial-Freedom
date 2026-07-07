@@ -27,7 +27,7 @@ interface SalaryConfigDao {
 
 @Dao
 interface BudgetAllocationDao {
-    @Query("SELECT * FROM budget_allocations ORDER BY group ASC, category ASC")
+    @Query("SELECT * FROM budget_allocations ORDER BY `group` ASC, category ASC")
     fun getAllAllocations(): Flow<List<BudgetAllocation>>
 
     @Query("SELECT * FROM budget_allocations WHERE `group` = :group ORDER BY category ASC")
@@ -45,6 +45,6 @@ interface BudgetAllocationDao {
     @Query("DELETE FROM budget_allocations")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM budget_allocations ORDER BY group ASC, category ASC")
+    @Query("SELECT * FROM budget_allocations ORDER BY `group` ASC, category ASC")
     suspend fun getAllAllocationsList(): List<BudgetAllocation>
 }
